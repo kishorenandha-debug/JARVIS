@@ -1,0 +1,40 @@
+# OS metadata
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Environment keys & Local Configs
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+config.local.json
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Logs and databases
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+db.json
+
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Temporary folders
+tmp/
+temp/
+dist/
+build/
+out/

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS - Futuristic Voice-First AI Assistant</title>
+    <meta name="description" content="JARVIS is a next-generation voice-first AI assistant with an Arc Reactor UI, continuous wake-word detection, weather, news, calculations, alarms, reminders, notes, and dual-language support (English & Tamil).">
+    
+    <!-- Google Fonts for Cyberpunk/Futuristic design -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Ambient scan lines and cyber grid background -->
+    <div class="cyber-grid"></div>
+    <div class="scanlines"></div>
+
+    <header class="main-header">
+        <div class="header-logo">
+            <span class="logo-accent">//</span>
+            <h1 class="logo-title">J.A.R.V.I.S.</h1>
+            <span class="logo-subtext">v3.5_ONLINE</span>
+        </div>
+        <div class="system-time-display">
+            <span id="header-date">--- --, ----</span>
+            <span class="time-separator">|</span>
+            <span id="header-time" class="tech-font">00:00:00 AM</span>
+        </div>
+        <div class="header-actions">
+            <button id="toggle-sounds-btn" class="icon-btn tooltip-btn" aria-label="Toggle sound effects">
+                <span class="icon">🔊</span>
+                <span class="tooltip">Sound FX</span>
+            </button>
+            <button id="open-settings-btn" class="icon-btn tooltip-btn" aria-label="Open settings">
+                <span class="icon">⚙️</span>
+                <span class="tooltip">Settings</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="jarvis-grid">
+        <!-- LEFT PANEL: Status and Assistant controls -->
+        <section class="grid-panel left-panel" aria-labelledby="status-panel-title">
+            <div class="panel-header">
+                <h2 id="status-panel-title">SYSTEM STATUS</h2>
+                <div class="pulse-indicator online"></div>
+            </div>
+            <div class="panel-content status-widget">
+                <div class="status-indicator-box">
+                    <div class="status-label">PRIMARY STATE</div>
+                    <div id="jarvis-state" class="status-value state-standby">STANDBY</div>
+                </div>
+                
+                <div class="stats-container tech-font">
+                    <div class="stat-row">
+                        <span>MIC INPUT:</span>
+                        <span id="mic-status" class="status-off">DISCONNECTED</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>SPEECH OUT:</span>
+                        <span id="speech-status" class="status-on">READY</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>WAKE WORD:</span>
+                        <span id="wakeword-status" class="status-on">ACTIVE ("Hey Jarvis")</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>API STATUS:</span>
+                        <span id="api-status-label" class="status-off">LOCAL ENGINE</span>
+                    </div>
+                </div>
+
+                <div class="voice-wave-container">
+                    <div class="wave-label">AUDIO FREQUENCY MONITOR</div>
+                    <canvas id="visualizer-canvas" width="280" height="70"></canvas>
+                </div>
+
+                <div class="quick-commands">
+                    <div class="panel-sub-header">VOICE COMMANDS TRICKS</div>
+                    <ul class="command-suggestions">
+                        <li>"Hey Jarvis, what is the weather?"</li>
+                        <li>"Set alarm for 10 seconds"</li>
+                        <li>"Add to-do buy groceries"</li>
+                        <li>"What is 350 multiplied by 12?"</li>
+                        <li>"ஜார்விஸ், மணி என்ன?" (Tamil)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- CENTER PANEL: Arc Reactor and Real-time Speech Transcripts -->
+        <section class="center-panel">
+            <div class="reactor-container">
+                <!-- Outer Tech Details -->
+                <div class="reactor-outer-text tech-font">SYSTEM MONITOR: ONLINE</div>
+                
+                <!-- The Arc Reactor Button -->
+                <button id="arc-reactor-trigger" class="arc-reactor-btn" aria-label="Activate voice listening manual trigger">
+                    <div class="ring outer-ring"></div>
+                    <div class="ring middle-ring"></div>
+                    <div class="ring inner-ring"></div>
+                    <div class="reactor-core">
+                        <div class="core-glow"></div>
+                        <div class="core-symbol">▲</div>
+                    </div>
+                    <div class="pulse-rings"></div>
+                </button>
+                
+                <div class="reactor-subtext">CLICK REACTOR OR SAY <strong>"HEY JARVIS"</strong></div>
+            </div>
+
+            <!-- Subtitle Transcript Card -->
+            <div class="transcript-card">
+                <div class="card-border-top"></div>
+                <div class="transcript-header">
+                    <span class="transcript-label tech-font">HUD INTERFACE</span>
+                    <span id="hud-indicator" class="pulse-hud">OFFLINE</span>
+                </div>
+                <div class="transcript-body">
+                    <div id="transcript-user" class="transcript-line user-line">
+                        <span class="line-prefix">USER:</span> <span id="user-speech-text" class="speech-placeholder">Await voice trigger...</span>
+                    </div>
+                    <div id="transcript-jarvis" class="transcript-line jarvis-line">
+                        <span class="line-prefix">JARVIS:</span> <span id="jarvis-speech-text" class="speech-placeholder">Ready to assist, Captain.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT PANEL: Alarms, Reminders, Notes, Weather, News -->
+        <section class="grid-panel right-panel" aria-labelledby="modules-panel-title">
+            <div class="panel-header">
+                <h2 id="modules-panel-title">ENVIRONMENT & TELEMETRY</h2>
+            </div>
+            
+            <div class="panel-content scrollable-panel">
+                <!-- Weather Widget -->
+                <div class="telemetry-widget" id="weather-widget">
+                    <div class="widget-header">
+                        <span>🌤️ WEATHER CORE</span>
+                        <button id="refresh-weather" class="text-btn">REFRESH</button>
+                    </div>
+                    <div class="widget-body loading" id="weather-details">
+                        Detecting atmospheric pressure...
+                    </div>
+                </div>
+
+                <!-- News Widget -->
+                <div class="telemetry-widget" id="news-widget">
+                    <div class="widget-header">
+                        <span>📰 DATA FEED</span>
+                        <button id="refresh-news" class="text-btn">SYNC</button>
+                    </div>
+                    <div class="widget-body" id="news-details">
+                        <ul class="news-list" id="news-list-container">
+                            <li class="loading-text">Synchronizing satellite channels...</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Notes & To-Do Widget -->
+                <div class="telemetry-widget" id="todo-widget">
+                    <div class="widget-header">
+                        <span>📋 TASK DATA</span>
+                        <button id="clear-todos" class="text-btn">CLEAR ALL</button>
+                    </div>
+                    <div class="widget-body">
+                        <div class="widget-input-row">
+                            <input type="text" id="new-todo-input" placeholder="Enter task..." aria-label="New task input">
+                            <button id="add-todo-btn" class="glow-btn">ADD</button>
+                        </div>
+                        <ul class="todo-list tech-font" id="todo-list-container">
+                            <li class="empty-list-msg">No active tasks in queue.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Reminders & Alarms Widget -->
+                <div class="telemetry-widget" id="reminders-widget">
+                    <div class="widget-header">
+                        <span>⏰ ALARMS & ALERTS</span>
+                        <button id="clear-alerts" class="text-btn">RESET</button>
+                    </div>
+                    <div class="widget-body">
+                        <div class="widget-input-row">
+                            <input type="number" id="alarm-seconds" min="1" placeholder="Secs" aria-label="Alarm duration in seconds" style="width: 70px;">
+                            <input type="text" id="alarm-label" placeholder="Alert Label (e.g. water)" aria-label="Alarm message text">
+                            <button id="add-alarm-btn" class="glow-btn">SET</button>
+                        </div>
+                        <ul class="alerts-list tech-font" id="alerts-list-container">
+                            <li class="empty-list-msg">No active alerts scheduled.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- BOTTOM ROW: Chat History Log -->
+    <footer class="history-footer">
+        <div class="history-header" id="history-toggle">
+            <span class="history-title">💬 CONVERSATION ARCHIVE</span>
+            <div class="history-controls">
+                <button id="clear-history-btn" class="text-btn">PURGE LOGS</button>
+                <span class="toggle-icon">▲</span>
+            </div>
+        </div>
+        <div class="history-content" id="history-content-panel">
+            <div id="chat-history-container" class="chat-history-log">
+                <div class="system-log-message">JARVIS system initialised. Awaiting authorization...</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="modal-overlay" aria-hidden="true" role="dialog">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>JARVIS CORE CONFIGURATION</h2>
+                <button id="close-settings-btn" class="close-btn" aria-label="Close settings">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="settings-form" onsubmit="event.preventDefault();">
+                    <!-- API Key Settings -->
+                    <div class="form-group">
+                        <label for="gemini-key-input" class="form-label">Gemini API Key (Optional)</label>
+                        <input type="password" id="gemini-key-input" class="form-control" placeholder="AIzaSy...">
+                        <small class="form-help">If omitted, JARVIS falls back to offline command parser.</small>
+                    </div>
+
+                    <!-- Language Configuration -->
+                    <div class="form-group">
+                        <span class="form-label">Assistant Language</span>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="lang-selection" value="en-US" checked>
+                                English (US)
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="lang-selection" value="ta-IN">
+                                தமிழ் (Tamil)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Voice Styles Settings -->
+                    <div class="form-row">
+                        <div class="form-group half-width">
+                            <label for="voice-pitch" class="form-label">Voice Pitch (0.5 - 2)</label>
+                            <input type="range" id="voice-pitch" min="0.5" max="2" step="0.1" value="1.0" class="range-control">
+                            <span id="voice-pitch-val" class="range-val tech-font">1.0</span>
+                        </div>
+                        <div class="form-group half-width">
+                            <label for="voice-rate" class="form-label">Speech Rate (0.5 - 2)</label>
+                            <input type="range" id="voice-rate" min="0.5" max="2" step="0.1" value="1.0" class="range-control">
+                            <span id="voice-rate-val" class="range-val tech-font">1.0</span>
+                        </div>
+                    </div>
+
+                    <!-- TTS Voice Selection -->
+                    <div class="form-group">
+                        <label for="tts-voice-select" class="form-label">Select Voice Synthesizer</label>
+                        <select id="tts-voice-select" class="form-control">
+                            <!-- Voices will be populated dynamically -->
+                            <option value="">System Default Voice</option>
+                        </select>
+                    </div>
+
+                    <!-- Permissions Section -->
+                    <div class="form-group">
+                        <span class="form-label">System Privileges</span>
+                        <div class="checkbox-row">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="perm-mic" checked disabled>
+                                Microphone Input (Required)
+                            </label>
+                        </div>
+                        <div class="checkbox-row mt-1">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="perm-notification">
+                                Desktop Notifications (For alarms/reminders)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" id="save-settings-btn" class="glow-btn">APPLY CONFIGURATION</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUDIO ALARM ELEMENT (Fallback in case of no synthesis) -->
+    <audio id="alarm-sound-fallback" src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA" preload="auto"></audio>
+
+    <!-- Load scripts -->
+    <script src="services.js"></script>
+    <script src="ai.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
